@@ -1,3 +1,5 @@
+import "../css/styles.css";
+
 function addTodo() {
   const input = document.getElementById("todo-input");
   const list = document.getElementById("todo-list");
@@ -13,3 +15,5 @@ function addTodo() {
     input.value = "";
   }
 }
+
+window.addTodo = addTodo;
