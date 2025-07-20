@@ -3,8 +3,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+
+const webpack = require("webpack");
 module.exports = {
   entry: "./src/js/main.js",
   output: {
@@ -32,12 +34,19 @@ module.exports = {
         use: ["style-loader", "css-loader", "sass-loader"],
         exclude: /node_modules/,
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        type: "asset",
+        generator: {
+          filename: "images/[name].[contenthash:12][ext]",
+        },
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      filename: 'index.[contenthash:12].html'
+      filename: "index.[contenthash:12].html",
     }),
     new MiniCssExtractPlugin({
       filename: "css/[name].[contenthash:12].css",
@@ -45,6 +54,37 @@ module.exports = {
   ],
   optimization: {
     minimize: true,
-    minimizer: ["...", new CssMinimizerPlugin()],
+    minimizer: [
+      "...",
+      new CssMinimizerPlugin(),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.imageminMinify,
+          options: {
+            plugins: [
+              ["gifsicle", { interlaced: true }],
+              ["jpegtran", { progressive: true }],
+              ["optipng", { optimizationLevel: 5 }],
+              ["pngquant", { quality: [0.6, 0.8], speed: 2 }],
+              [
+                "svgo",
+                {
+                  plugins: [
+                    {
+                      name: "preset-default",
+                      params: {
+                        overrides: {
+                          removeViewBox: false,
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+      }),
+    ],
   },
 };
