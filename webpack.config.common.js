@@ -15,7 +15,10 @@ module.exports = {
     clean: true,
   },
   resolve: {
-    extensions: [".js", ".css", "scss", ".html"],
+    extensions: [".js", ".ts", ".css", ".scss", ".html"],
+    alias: {
+      src: path.resolve(__dirname, "src/"), // hỗ trợ import từ 'src/...'
+    },
   },
   module: {
     rules: [
@@ -41,6 +44,23 @@ module.exports = {
           filename: "images/[name].[contenthash:12][ext]",
         },
       },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-typescript"],
+          },
+        },
+      },
     ],
   },
   plugins: [
@@ -59,7 +79,7 @@ module.exports = {
       new CssMinimizerPlugin(),
       new ImageMinimizerPlugin({
         minimizer: {
-          implementation: ImageMinimizerPlugin.imageminMinify,
+          implementation: ImageMinimizerPlugin.imageminGenerate,
           options: {
             plugins: [
               ["gifsicle", { interlaced: true }],

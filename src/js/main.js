@@ -1,12 +1,16 @@
+import { getName } from "src/helper/helper";
 import "../css/styles.css";
-import bg from "../images/background.png";
-import logo from '../images/background2.jpeg';
-import dog from '../images/dog.jpg';
-console.log("LOGO:", logo);
+import dog from "../images/dog.jpg";
+
+getName('1231321')
+
+console.log("LOGO:", process.env.NODE_ENV);
 function addTodo() {
   const input = document.getElementById("todo-input");
   const list = document.getElementById("todo-list");
   const text = input.value.trim();
+
+//   const result = "hello" |> ((x) => x.toUpperCase()) |> ((x) => `${x} world`);
 
   if (text !== "") {
     const li = document.createElement("li");
