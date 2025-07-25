@@ -5,6 +5,7 @@ const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const webpack = require("webpack");
 module.exports = {
@@ -70,6 +71,19 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: "css/[name].[contenthash:12].css",
+    }),
+    new CompressionPlugin({
+      filename: "[path][base].gz",
+      algorithm: "gzip",
+      test: /\.(js|ts|css)$/,
+    }),
+    new CompressionPlugin({
+      filename: "[path][base].br",
+      algorithm: "brotliCompress",
+      test: /\.(js|ts|css)/,
+      compressionOptions: {
+        level: 11,
+      },
     }),
   ],
   optimization: {
